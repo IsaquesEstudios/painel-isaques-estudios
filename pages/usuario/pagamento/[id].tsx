@@ -28,9 +28,6 @@ export default function Pagamento({ id }: any) {
 
   const { error, isLoading } = useQuery("payments", async () =>
     await axios.get(`https://api.mercadopago.com/v1/payments/${paramPage}`, {
-      params: {
-        external_reference: 'matteus.isaque28@gmail.com'
-      },
       headers: {
         Authorization: `Bearer APP_USR-6224878114061378-071003-98d48a2185ebf86cf3f9bd60a4a2fc02-513614546`
       }
