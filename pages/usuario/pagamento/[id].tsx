@@ -51,8 +51,6 @@ export default function Pagamento({ id }: any) {
     }
   }
 
-  console.log(detailsPayment?.point_of_interaction.transaction_data.qr_code)
-
   return (
     <Box as='main' w='100%'>
       {!isLoading ?
@@ -74,7 +72,8 @@ export default function Pagamento({ id }: any) {
                 fgColor="#ffffff"
                 size={256}
                 level="L"
-                value={detailsPayment?.point_of_interaction.transaction_data.qr_code}
+                // value={detailsPayment?.point_of_interaction.transaction_data.qr_code}
+                value='00020126330014br.gov.bcb.pix01115276413185252040000530398654040.015802BR5913MATTEUSISAQUE6008So Paulo62240520mpqrinter543601635276304B707'
               />}
           </Box>
         </Box>

@@ -35,7 +35,7 @@ export function ApiCliente(ctx = undefined) {
           isRefreshing = true
 
           api.post('/refresh', { refresh_token }).then(response => {
-            const { token } = response.data
+            const { token } = response?.data
 
             setCookie(undefined, 'isaquesestudios.token', token, {
               maxAge: 60 * 60 * 24

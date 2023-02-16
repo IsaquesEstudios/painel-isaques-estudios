@@ -14,14 +14,20 @@ type AuthProviderProps = {
   children: ReactNode;
 }
 
-// type DataUser {
-
-// }
+type DataUser = {
+  name: string
+  email: string
+  permission: string[]
+  payments: string[]
+  pending_payments: string[]
+  calls: string[]
+  created_at: string
+}
 
 type AuthContextData = {
   signIn(credentials: SignInCredentials): Promise<any>
   signUp(credentials: SignInCredentials): Promise<void>
-  data: any
+  data: DataUser
   isAuthenticated: boolean
 }
 

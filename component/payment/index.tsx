@@ -1,10 +1,13 @@
+import { authContext } from "@/context/AuthContext";
 import { ApiCliente } from "@/util/axios";
 import { Status } from "@/util/formater";
 // import { formateDate } from "@/util/formateDate";
-import { Box, Grid, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Grid, Spinner, Stack, Text } from "@chakra-ui/react";
 import axios from "axios";
 import Link from "next/link";
+import { useContext, useState } from "react";
 import { Query, useQuery } from "react-query";
+
 
 type PaymentsRecivedType = {
   id: number
@@ -14,16 +17,23 @@ type PaymentsRecivedType = {
   date_of_expiration: string
 }
 
+type AllPaymentRecived = {
+  results: PaymentsRecivedType[]
+}
+
 type PaymentParamsType = {
   limit: number | undefined
   offset: number | undefined
+  user: string
 }
 
-export default function Payment({ limit, offset }: PaymentParamsType) {
-  const { data, error, isLoading } = useQuery("payments", async () =>
+export default function Payment({ limit, offset, user }: PaymentParamsType) {
+  const [tst, setTst] = useState<number>(0)
+
+  const { data, isLoading } = useQuery(`payment${tst}`, async () =>
     await axios.get('https://api.mercadopago.com/v1/payments/search', {
       params: {
-        external_reference: 'matteus.isaque28@gmail.com',
+        external_reference: user,
         limit: limit,
         offset: offset
       },
@@ -31,9 +41,19 @@ export default function Payment({ limit, offset }: PaymentParamsType) {
         Authorization: `Bearer APP_USR-6224878114061378-071003-98d48a2185ebf86cf3f9bd60a4a2fc02-513614546`
       }
     }).then((res) => {
-      return res.data.results
+      return (res.data)
     })
   )
+  // setTimeout(() => {
+  //   setTst(tst + 1)
+  // }, 10000)
+
+  function FormateDate(item: any) {
+    let convertDate = new Date(item)
+    const formateDate = new Intl.DateTimeFormat('pt-BR').format(convertDate)
+
+    return formateDate
+  }
 
   return (
     <Stack spacing={6} w='100%' >
@@ -47,22 +67,18 @@ export default function Payment({ limit, offset }: PaymentParamsType) {
         </Grid>
       </Box>
       {!isLoading ?
-        data?.map((item: PaymentsRecivedType, index: number) => {
-
-          let convertDate = new Date(item?.date_of_expiration)
-          const formateDate = new Intl.DateTimeFormat('pt-BR').format(convertDate)
+        data?.results?.map((item: PaymentsRecivedType, index: number) => {
 
           return (
-            <Grid w='100%' gridTemplateColumns='40% 10% 15% 15% 10%' gridColumnGap='2.5%' key={index}>
-              <Text>
-                <Link href={`usuario/pagamento/${item.id}`}>
-                  {item.description}
-                </Link>
-              </Text>
+            <Grid w='100%' justifyContent='center' alignItems='center' gridTemplateColumns='40% 10% 15% 15% 10%' gridColumnGap='2.5%' key={index}>
+              <Text>{item.description}</Text>
               <Text>{item.transaction_amount}</Text>
               <Text>{Status(item.status)}</Text>
-              {item.date_of_expiration && <Text>{formateDate}</Text>}
-              <Text>BOTÂO</Text>
+              {item.date_of_expiration && <Text>{FormateDate(item.date_of_expiration)}</Text>}
+
+              <Link href={`usuario/pagamento/${item.id}`}>
+                <Button w='100%' bgColor='Yellow.800' color='Black.900'>PAGAR</Button>
+              </Link>
             </Grid>
           )
         })
